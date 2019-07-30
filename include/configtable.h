@@ -398,7 +398,8 @@ typedef struct
 	volatile unsigned int  PicpSensorStat;  		
 	volatile unsigned int  PicpSensorStatpri; 		
 	volatile unsigned int  PicpPosStat;			
-	volatile unsigned int  ImgZoomStat[CAMERACHMAX];   	
+	volatile unsigned int  ImgZoomStat[CAMERACHMAX];  
+	volatile unsigned int  ImgStableStat[CAMERACHMAX];   	
 	volatile unsigned int  ImgEnhStat[CAMERACHMAX];    	
 	volatile unsigned int  ImgBlobDetect[CAMERACHMAX];    
 	volatile unsigned int  ImgFrezzStat[CAMERACHMAX];

@@ -2305,35 +2305,40 @@ void CProcess::OnKeyDwn(unsigned char key)
 		//printf("pIStuts->MtdState[pIStuts->SensorStat]  = %d\n",pIStuts->MtdState[pIStuts->SensorStat] );
 	}
 
-	if (key == 't' || key == 'T')
-		{
-		}
+	if (key == 's' || key == 'S')
+	{		
+		static bool bOpen = false;
+		bOpen = !bOpen;
+		pIStuts->ImgStableStat[pIStuts->SensorStat] = bOpen;
+		app_ctrl_setStable(pIStuts);
+	}
+	
 	if (key == 'f' || key == 'F')
-		{
-			if(pIStuts->ImgFrezzStat[pIStuts->SensorStat])
-				pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Disable;
-			else
-				pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Enable;
-			
-			msgdriv_event(MSGID_EXT_INPUT_ENFREZZ, NULL);
-		}
+	{
+		if(pIStuts->ImgFrezzStat[pIStuts->SensorStat])
+			pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Disable;
+		else
+			pIStuts->ImgFrezzStat[pIStuts->SensorStat] = eImgAlg_Enable;
+		
+		msgdriv_event(MSGID_EXT_INPUT_ENFREZZ, NULL);
+	}
 	
 	if (key == 'p'|| key == 'P')
-		{
-			msgdriv_event(MSGID_EXT_INPUT_PICPCROP, NULL);
-		}
+	{
+		msgdriv_event(MSGID_EXT_INPUT_PICPCROP, NULL);
+	}
 
 
 	if(key == 'w'|| key == 'W')
-		{
-			if(pIStuts->ImgMmtshow[pIStuts->SensorStat])
-				pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Disable;
-			else
-				pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Enable;
-			
-			msgdriv_event(MSGID_EXT_INPUT_MMTSHOW, NULL);
-			OSA_printf("MSGID_EXT_INPUT_MMTSHOW\n");
-		}
+	{
+		if(pIStuts->ImgMmtshow[pIStuts->SensorStat])
+			pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Disable;
+		else
+			pIStuts->ImgMmtshow[pIStuts->SensorStat] = eImgAlg_Enable;
+		
+		msgdriv_event(MSGID_EXT_INPUT_MMTSHOW, NULL);
+		OSA_printf("MSGID_EXT_INPUT_MMTSHOW\n");
+	}
 
 	
 }
@@ -2356,7 +2361,7 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 		}
 		int itmp;
 		//chage acq;
-		m_rcAcq.width		=	pIStuts->AimW[pIStuts->SensorStat];
+		m_rcAcq.width	=	pIStuts->AimW[pIStuts->SensorStat];
 		m_rcAcq.height	=	pIStuts->AimH[pIStuts->SensorStat];
 
 		m_rcAcq.x=pIStuts->opticAxisPosX[pIStuts->SensorStat]-m_rcAcq.width/2;
@@ -2669,6 +2674,14 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 			dynamic_config(CDisplayer::DS_CFG_MMTEnable, pIStuts->SensorStat, &MMTStatus);
 		else
 			dynamic_config(CDisplayer::DS_CFG_MMTEnable, pIStuts->SensorStat, &MMTStatus);
+	}
+
+	if( msgId == MSGID_EXT_INPUT_ENSTB )
+	{
+		if(pIStuts->ImgEnhStat[pIStuts->SensorStat])
+			m_display.startStbParam(pIStuts->SensorStat);
+		else
+			m_display.stopStbParam(pIStuts->SensorStat);
 	}
 
 	if(msgId == MSGID_EXT_INPUT_ENENHAN)
@@ -3056,7 +3069,8 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 			}
 		}
 #endif
-	}
+	}	
+	
 }
 
 
@@ -3077,7 +3091,8 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_MTD_SELECT,     	MSGAPI_inpumtdSelect,    		0);
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_AIMPOS,          	MSGAPI_setAimRefine,    		0);
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_AIMSIZE,          	MSGAPI_setAimSize,    		    0);
-    MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENENHAN,           	MSGAPI_inpuenhance,       	    0);
+    MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENSTB,           	MSGAPI_inpustable,       	    0);
+	MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENENHAN,           	MSGAPI_inpuenhance,       	    0);
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENBDT,           	MSGAPI_inputbdt,         		0);
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENZOOM,           	MSGAPI_inputzoom,               0);
     MSGDRIV_attachMsgFun(handle,    MSGID_EXT_INPUT_ENFREZZ,           	MSGAPI_inputfrezz,              0);
@@ -3182,6 +3197,10 @@ void CProcess::MSGAPI_inpumtdSelect(long lParam )
 	OSA_printf("MSGAPI_inpumtdSelect\n");
 }
 
+void CProcess::MSGAPI_inpustable(long lParam )
+{
+	sThis->msgdriv_event(MSGID_EXT_INPUT_ENSTB,NULL);
+}
 
 void CProcess::MSGAPI_inpuenhance(long lParam )
 {

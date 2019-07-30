@@ -101,6 +101,19 @@ void app_ctrl_setMmtSelect(CMD_EXT * pIStuts,unsigned char index)
 	return ;
 }
 
+void app_ctrl_setStable(CMD_EXT * pInCmd)
+{
+	if(msgextInCtrl==NULL)
+		return ;
+	CMD_EXT *pIStuts = msgextInCtrl;
+
+	if(pInCmd->ImgStableStat[pInCmd->SensorStat] != pIStuts->ImgStableStat[pInCmd->SensorStat])
+	{
+		pIStuts->ImgStableStat[pInCmd->SensorStat] = pInCmd->ImgStableStat[pInCmd->SensorStat];
+		MSGDRIV_send(MSGID_EXT_INPUT_ENSTB, 0);
+	}
+	return ;
+}
 
 void app_ctrl_setEnhance(CMD_EXT * pInCmd)
 {

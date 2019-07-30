@@ -142,6 +142,9 @@ protected:
 	static void MSGAPI_setPatternDetect(long lParam);
 
 	static void MSGAPI_input_gstctrl(long lParam);
+	
+	static void MSGAPI_inpustable(long lParam );
+
 
 private:
 	ACK_EXT extOutAck;

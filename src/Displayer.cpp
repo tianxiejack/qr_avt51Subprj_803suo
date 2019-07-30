@@ -64,6 +64,12 @@ static GLfloat m_glvTexCoordsDefault[8] = {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1
 OSD_CONFIG_USER gCFG_Osd = {0};
 OSDSTATUS gSYS_Osd = {0};
 
+
+static CORE_STAB_PARAM gstabParams[MAX_CHAN];
+static unsigned int gnSabCount[MAX_CHAN];
+static bool gEnableStabFlag[MAX_CHAN];
+static std::unique_ptr<MotionComp> motionCompensator[MAX_CHAN];
+
 CDisplayer::CDisplayer()
 :m_renderCount(0),m_bRun(false),m_bFullScreen(false),m_bOsd(false),
  m_glProgram(0), m_bUpdateVertex(false),m_tmRender(0ul),m_waitSync(false),
@@ -92,6 +98,9 @@ CDisplayer::CDisplayer()
 	frameRate = 0.0;
 
 	m_initPrm.disSched = 3.5;
+
+	memset(gnSabCount, 0, sizeof(gnSabCount));
+	memset(gEnableStabFlag, 0, sizeof(gEnableStabFlag));
 }
 
 CDisplayer::~CDisplayer()
@@ -865,6 +874,33 @@ void CDisplayer::display(Mat frame, int chId, int code)
 		m_img[chId] = cv::Mat(frame.rows, frame.cols, CV_8UC3, d_src_rgb);
 
 		OSA_mutexUnlock(&m_mutex);
+
+		//stable		
+		if(gEnableStabFlag[chid])
+		{
+			cvGpuMat inFrame = cvGpuMat(m_img[chId].rows, m_img[chId].cols, m_img[chId].type(), (void*)m_img[chId].data, m_img[chId].step.buf[0]);
+			cvGpuMat outFrame = cvGpuMat(m_img[chId].rows, m_img[chId].cols, m_img[chId].type(), (void*)m_img[chId].data, m_img[chId].step.buf[0]);
+
+			if(gnSabCount[chId] == 0){
+				MotionComp::InitParams stabInitParams;
+				stabInitParams.bBorderTransparent = gstabParams[chId].bBorderTransparent;
+				stabInitParams.cropMargin = gstabParams[chId].cropMargin;
+				stabInitParams.bCropMarginScale = gstabParams[chId].bCropMarginScale;
+				stabInitParams.noise_cov = gstabParams[chId].noise_cov;
+				stabInitParams.bPreprocess = gstabParams[chId].bPreProcess;
+
+				motionCompensator[chId].reset(MotionComp::create((MotionComp::MotionModel)gstabParams[chId].mm, !gstabParams[chId].bFixedPos));
+				motionCompensator[chId]->init(inFrame, stabInitParams);
+			}else{
+				motionCompensator[chId]->process(inFrame);
+			}
+			cvGpuMat stabFrame = motionCompensator[chId]->getOut();
+			cudaMemcpy2D(outFrame.data, outFrame.step, stabFrame.data, stabFrame.step,
+					outFrame.cols*outFrame.channels(), outFrame.rows, cudaMemcpyHostToDevice);
+			gnSabCount[chId]++;
+		}
+		//stable end
+		
 
 		cudaFree_share(d_src, chId);
 
@@ -2204,5 +2240,18 @@ void CDisplayer::chinese_osd(int x,int y,wchar_t* text,char font,char fontsize,u
 	OSDdrawText(x,y,text,font,fontsize,win_width,win_height);
 	glUseProgram(0);
 }
+
+
+void CDisplayer::startStbParam(int chid)
+{
+	gnSabCount[chid] = 0;
+	gEnableStabFlag[chid] = true;
+}
+
+void CDisplayer::stopStbParam(int chid)
+{
+	gEnableStabFlag[chid] = false;
+}
+
 
 

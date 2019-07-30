@@ -22,6 +22,8 @@ const char chid = 5;
 #include "app_status.h"
 #include "configtable.h"
 
+#include "crvxMotionComp_lib.hpp"
+
 using namespace std;
 using namespace cv;
 using namespace cr_osa;
@@ -106,6 +108,37 @@ typedef struct _ds_init_param{
 }DS_InitPrm;
 
 
+typedef struct _core_stab_param
+{
+	enum MotionModel
+	{
+	    MM_TRANSLATION = 0,
+	    MM_TRANSLATION_AND_SCALE = 1,
+	    MM_ROTATION = 2,
+	    MM_RIGID = 3,
+	    MM_SIMILARITY = 4,
+	    MM_AFFINE = 5,
+	    MM_HOMOGRAPHY = 6,
+	    MM_STABILIZER = 7,
+	    MM_UNKNOWN = 8
+	};
+	MotionModel mm;
+	double noise_cov;
+	bool bBorderTransparent;
+	float cropMargin;
+	bool bCropMarginScale;
+	bool bFixedPos;
+	bool bPreProcess;
+	_core_stab_param(){
+		mm = MM_TRANSLATION;
+		noise_cov = 1E-6;
+		bBorderTransparent = false;
+		cropMargin = -1.0f;
+		bCropMarginScale = false;
+		bFixedPos = false;
+		bPreProcess = false;
+	}
+}CORE_STAB_PARAM;
 
 
 class CDisplayer 
@@ -275,6 +308,9 @@ protected:
 	
 	struct cudaGraphicsResource *cuda_pbo_resource[DS_CHAN_MAX];
 
+	void startStbParam(int chid);
+	void stopStbParam(int chid);
+	
 
 	int gl_create();
 	void gl_destroy();
@@ -311,8 +347,6 @@ public:
 	int OSDChid();
 	void drawtriangle(Mat frame, int direction, int alpha);
 	void OSDWorkMode();
-
-	
 };
 
 #define mallocwidth 1920

@@ -31,6 +31,7 @@ bool CVideoProcess::m_bMtd = false;
 bool CVideoProcess::m_bMoveDetect = false;
 bool CVideoProcess::m_bSceneTrack = false;
 bool CVideoProcess::m_bPatterDetect = false;
+
 int CVideoProcess::m_iTrackStat = 0;
 int CVideoProcess::m_iTrackLostCnt = 0;
 int CVideoProcess::m_iSceneTrackStat = 0;
