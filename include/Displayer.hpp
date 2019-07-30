@@ -308,10 +308,6 @@ protected:
 	
 	struct cudaGraphicsResource *cuda_pbo_resource[DS_CHAN_MAX];
 
-	void startStbParam(int chid);
-	void stopStbParam(int chid);
-	
-
 	int gl_create();
 	void gl_destroy();
 	void gl_init();
@@ -347,6 +343,9 @@ public:
 	int OSDChid();
 	void drawtriangle(Mat frame, int direction, int alpha);
 	void OSDWorkMode();
+
+	void startStbParam(int chid);
+	void stopStbParam(int chid);
 };
 
 #define mallocwidth 1920

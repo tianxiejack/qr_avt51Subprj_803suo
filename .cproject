@@ -45,6 +45,7 @@
 									<listOptionValue builtIn="false" value="__TRACK__=1"/>
 									<listOptionValue builtIn="false" value="__MOVE_DETECT__=1"/>
 								</option>
+								<option id="nvcc.compiler.cpp11option.1283360171" name="Enable C++11 support (-std=c++11)" superClass="nvcc.compiler.cpp11option" value="true" valueType="boolean"/>
 								<inputType id="nvcc.compiler.input.cu.304571006" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.1614986746" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.1801021486" superClass="nvcc.compiler.input.c"/>
@@ -55,15 +56,17 @@
 									<listOptionValue builtIn="false" value="opencv_objdetect"/>
 									<listOptionValue builtIn="false" value="opencv_ml"/>
 									<listOptionValue builtIn="false" value="opencv_calib3d"/>
-									<listOptionValue builtIn="false" value="Mvdetect"/>
-									<listOptionValue builtIn="false" value="freetype"/>
-									<listOptionValue builtIn="false" value="GLU"/>
-									<listOptionValue builtIn="false" value="opencv_legacy"/>
-									<listOptionValue builtIn="false" value="crScene"/>
 									<listOptionValue builtIn="false" value="opencv_video"/>
 									<listOptionValue builtIn="false" value="opencv_core"/>
 									<listOptionValue builtIn="false" value="opencv_imgproc"/>
+									<listOptionValue builtIn="false" value="opencv_contrib"/>
+									<listOptionValue builtIn="false" value="opencv_features2d"/>
+									<listOptionValue builtIn="false" value="opencv_legacy"/>
 									<listOptionValue builtIn="false" value="opencv_gpu"/>
+									<listOptionValue builtIn="false" value="Mvdetect"/>
+									<listOptionValue builtIn="false" value="freetype"/>
+									<listOptionValue builtIn="false" value="GLU"/>
+									<listOptionValue builtIn="false" value="crScene"/>
 									<listOptionValue builtIn="false" value="GL"/>
 									<listOptionValue builtIn="false" value="GLEW"/>
 									<listOptionValue builtIn="false" value="glut"/>
@@ -72,11 +75,11 @@
 									<listOptionValue builtIn="false" value="nppc"/>
 									<listOptionValue builtIn="false" value="cudart"/>
 									<listOptionValue builtIn="false" value="gomp"/>
-									<listOptionValue builtIn="false" value="opencv_contrib"/>
-									<listOptionValue builtIn="false" value="opencv_features2d"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="ipc_c"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="crosa"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="crgst"/>
+									<listOptionValue builtIn="false" value="ipc_c"/>
+									<listOptionValue builtIn="false" value="crosa"/>
+									<listOptionValue builtIn="false" value="crgst"/>
+									<listOptionValue builtIn="false" value="visionworks"/>
+									<listOptionValue builtIn="false" value="crvxMotionComp"/>
 								</option>
 								<option id="nvcc.linker.option.paths.1718676411" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu"/>
@@ -152,6 +155,7 @@
 									<listOptionValue builtIn="false" value="__TRACK__=1"/>
 									<listOptionValue builtIn="false" value="__MOVE_DETECT__=1"/>
 								</option>
+								<option id="nvcc.compiler.cpp11option.1866821174" name="Enable C++11 support (-std=c++11)" superClass="nvcc.compiler.cpp11option" value="true" valueType="boolean"/>
 								<inputType id="nvcc.compiler.input.cu.67168885" superClass="nvcc.compiler.input.cu"/>
 								<inputType id="nvcc.compiler.input.cpp.495488102" superClass="nvcc.compiler.input.cpp"/>
 								<inputType id="nvcc.compiler.input.c.594158201" superClass="nvcc.compiler.input.c"/>
@@ -162,15 +166,17 @@
 									<listOptionValue builtIn="false" value="opencv_objdetect"/>
 									<listOptionValue builtIn="false" value="opencv_ml"/>
 									<listOptionValue builtIn="false" value="opencv_calib3d"/>
-									<listOptionValue builtIn="false" value="Mvdetect"/>
-									<listOptionValue builtIn="false" value="freetype"/>
-									<listOptionValue builtIn="false" value="GLU"/>
-									<listOptionValue builtIn="false" value="opencv_legacy"/>
-									<listOptionValue builtIn="false" value="crScene"/>
 									<listOptionValue builtIn="false" value="opencv_video"/>
 									<listOptionValue builtIn="false" value="opencv_core"/>
 									<listOptionValue builtIn="false" value="opencv_imgproc"/>
+									<listOptionValue builtIn="false" value="opencv_contrib"/>
+									<listOptionValue builtIn="false" value="opencv_features2d"/>
+									<listOptionValue builtIn="false" value="opencv_legacy"/>
 									<listOptionValue builtIn="false" value="opencv_gpu"/>
+									<listOptionValue builtIn="false" value="Mvdetect"/>
+									<listOptionValue builtIn="false" value="freetype"/>
+									<listOptionValue builtIn="false" value="GLU"/>
+									<listOptionValue builtIn="false" value="crScene"/>
 									<listOptionValue builtIn="false" value="GL"/>
 									<listOptionValue builtIn="false" value="GLEW"/>
 									<listOptionValue builtIn="false" value="glut"/>
@@ -179,11 +185,11 @@
 									<listOptionValue builtIn="false" value="nppc"/>
 									<listOptionValue builtIn="false" value="cudart"/>
 									<listOptionValue builtIn="false" value="gomp"/>
-									<listOptionValue builtIn="false" value="opencv_contrib"/>
-									<listOptionValue builtIn="false" value="opencv_features2d"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="ipc_c"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="crosa"/>
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="crgst"/>
+									<listOptionValue builtIn="false" value="ipc_c"/>
+									<listOptionValue builtIn="false" value="crosa"/>
+									<listOptionValue builtIn="false" value="crgst"/>
+									<listOptionValue builtIn="false" value="visionworks"/>
+									<listOptionValue builtIn="false" value="crvxMotionComp"/>
 								</option>
 								<option id="nvcc.linker.option.paths.910279819" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu"/>
