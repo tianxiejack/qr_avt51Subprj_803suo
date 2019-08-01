@@ -2309,8 +2309,8 @@ void CProcess::OnKeyDwn(unsigned char key)
 	{		
 		static bool bOpen = false;
 		bOpen = !bOpen;
-		pIStuts->ImgStableStat[pIStuts->SensorStat] = bOpen;
-		app_ctrl_setStable(pIStuts);
+		tmpCmd.ImgStableStat[pIStuts->SensorStat] = bOpen;
+		app_ctrl_setStable(&tmpCmd);
 	}
 	
 	if (key == 'f' || key == 'F')
@@ -2678,7 +2678,7 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 
 	if( msgId == MSGID_EXT_INPUT_ENSTB )
 	{
-		if(pIStuts->ImgEnhStat[pIStuts->SensorStat])
+		if(pIStuts->ImgStableStat[pIStuts->SensorStat])
 			m_display.startStbParam(pIStuts->SensorStat);
 		else
 			m_display.stopStbParam(pIStuts->SensorStat);

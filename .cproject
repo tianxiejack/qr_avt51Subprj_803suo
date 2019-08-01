@@ -80,6 +80,7 @@
 									<listOptionValue builtIn="false" value="crgst"/>
 									<listOptionValue builtIn="false" value="visionworks"/>
 									<listOptionValue builtIn="false" value="crvxMotionComp"/>
+									<listOptionValue builtIn="false" value="crvxEnhance"/>
 								</option>
 								<option id="nvcc.linker.option.paths.1718676411" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu"/>
@@ -190,6 +191,7 @@
 									<listOptionValue builtIn="false" value="crgst"/>
 									<listOptionValue builtIn="false" value="visionworks"/>
 									<listOptionValue builtIn="false" value="crvxMotionComp"/>
+									<listOptionValue builtIn="false" value="crvxEnhance"/>
 								</option>
 								<option id="nvcc.linker.option.paths.910279819" name="Library search path (-L)" superClass="nvcc.linker.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/aarch64-linux-gnu"/>

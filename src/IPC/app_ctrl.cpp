@@ -107,9 +107,9 @@ void app_ctrl_setStable(CMD_EXT * pInCmd)
 		return ;
 	CMD_EXT *pIStuts = msgextInCtrl;
 
-	if(pInCmd->ImgStableStat[pInCmd->SensorStat] != pIStuts->ImgStableStat[pInCmd->SensorStat])
+	if(pInCmd->ImgStableStat[pIStuts->SensorStat] != pIStuts->ImgStableStat[pIStuts->SensorStat])
 	{
-		pIStuts->ImgStableStat[pInCmd->SensorStat] = pInCmd->ImgStableStat[pInCmd->SensorStat];
+		pIStuts->ImgStableStat[pIStuts->SensorStat] = pInCmd->ImgStableStat[pIStuts->SensorStat];
 		MSGDRIV_send(MSGID_EXT_INPUT_ENSTB, 0);
 	}
 	return ;

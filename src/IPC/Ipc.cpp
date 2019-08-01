@@ -95,13 +95,14 @@ void cfg_ctrl_sysInit(int * configTab)
 			vdisWH[i][0] = 1280;
 			vdisWH[i][1] = 720;
 		}
-		else
+		else if(6 == resolution)
 		{
 			vcapWH[i][0] = 720;
 			vcapWH[i][1] = 576;
 			vdisWH[i][0] = 720;
 			vdisWH[i][1] = 576;
-		}
+		}		
+		
 		usrosdId = configTab[CFGID_INPUT_CHNAME(BKID)];
 		if(usrosdId >= 0 && usrosdId < CFGID_USEROSD_MAX)
 		{

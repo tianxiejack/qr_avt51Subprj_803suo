@@ -46,7 +46,7 @@ public:
 
 		InitParams(){
 			stream = 0;
-			noise_cov = 1E-4;
+			noise_cov = 1E-6;
 			bBorderTransparent = true;
 			//borderValue=cv::Scalar();
 			cropMargin = -1.0f;

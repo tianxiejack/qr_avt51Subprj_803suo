@@ -27,7 +27,7 @@
 #define IMAGE_WIDTH  1440
 #define IMAGE_HEIGHT 576
 
-int vcapWH[5][2] = {{1920, 1080},{1920, 1080},{1920, 1080},{1920, 1080},{720, 576}};
+int vcapWH[5][2] = {{1920, 1080},{640, 512},{1920, 1080},{1920, 1080},{720, 576}};
 int vdisWH[5][2] = {{1920, 1080},{1920, 1080},{1920, 1080},{1920, 1080},{720, 576}};
 
 v4l2_camera::v4l2_camera(int devId):io(IO_METHOD_USERPTR),buffers(NULL),force_format(1),m_devFd(-1),n_buffers(0),bRun(false)
@@ -39,10 +39,10 @@ v4l2_camera::v4l2_camera(int devId):io(IO_METHOD_USERPTR),buffers(NULL),force_fo
 			imgwidth  	= FRAME_WIDTH/2;
 			imgheight 	= FRAME_HEIGHT;
 			imgstride 	= imgwidth*2;
-			bufSize 		= imgwidth * imgheight * 2;
+			bufSize 	= imgwidth * imgheight * 2;
 			imgtype   	= CV_8UC2;
 			memType 	= MEMORY_LOCKED;
-			bufferCount 	= 8;
+			bufferCount = 8;
 			Id 			= devId;
 			break;
 		case video_gaoqing0:
@@ -53,10 +53,10 @@ v4l2_camera::v4l2_camera(int devId):io(IO_METHOD_USERPTR),buffers(NULL),force_fo
 			imgwidth  	= vcapWH[devId][0];
 			imgheight 	= vcapWH[devId][1];
 			imgstride 	= imgwidth*2;
-			bufSize 		= imgwidth * imgheight * 2;
-			imgtype     	= CV_8UC2;
+			bufSize 	= imgwidth * imgheight * 2;
+			imgtype     = CV_8UC2;
 			memType 	= MEMORY_LOCKED;
-			bufferCount  = 8;
+			bufferCount = 8;
 			Id			= devId;
 			break;
 		default:

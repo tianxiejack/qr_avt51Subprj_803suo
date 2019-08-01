@@ -10,17 +10,17 @@
 enum devvideo{
 	video_gaoqing0=0,
 	video_gaoqing,
+	MAX_CHAN,
 	video_gaoqing2,
 	video_gaoqing3,
 	video_pal,
-	MAX_CHAN,
 };
 
 #define MAIN_CHID					video_gaoqing0
 #define PAL_VIRCHID					0
 
 #define VIDEO_DIS_WIDTH		1920
-#define VIDEO_DIS_HEIGHT		1080
+#define VIDEO_DIS_HEIGHT	1080
 
 #define BALL_CHID			video_gaoqing
 #define GUN_CHID			video_gaoqing0
