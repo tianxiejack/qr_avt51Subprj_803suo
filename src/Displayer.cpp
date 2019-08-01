@@ -216,8 +216,6 @@ int CDisplayer::destroy()
 
 int CDisplayer::initRender(bool bInitBind)
 {	
-	
-
 	m_renderCount = 2;
 #if 0
 	m_renders[0].croprect.x=0;
@@ -225,11 +223,8 @@ int CDisplayer::initRender(bool bInitBind)
 	m_renders[0].croprect.w=0;
 	m_renders[0].croprect.h=0;
 #endif
-	
-
 	//m_renders[0].videodect=1;
 	
-
 	for(int chId=0; chId<DS_CHAN_MAX; chId++)
 	{
 		m_img[chId].cols =0 ;
@@ -246,36 +241,36 @@ int CDisplayer::initRender(bool bInitBind)
 		m_renders[chId].displayrect.x = 0;
 		m_renders[chId].displayrect.y = 0;
 		m_renders[chId].displayrect.w = VIDEO_DIS_WIDTH/2;
-		m_renders[chId].displayrect.h =  VIDEO_DIS_HEIGHT/2;
+		m_renders[chId].displayrect.h = VIDEO_DIS_HEIGHT/2;
 
 		m_renders[chId].bFreeze=0;
 	}
-
 
 	m_renders[0].croprect.x=0;
 	m_renders[0].croprect.y=0;
 	m_renders[0].croprect.w=0;
 	m_renders[0].croprect.h=0;
 	
-	m_renders[0].video_chId = m_initPrm.initMainchId;
-	m_renders[0].displayrect.x = 0;
-	m_renders[0].displayrect.y = 0;
-	m_renders[0].displayrect.w = VIDEO_DIS_WIDTH;
-	m_renders[0].displayrect.h = VIDEO_DIS_HEIGHT;
+	m_renders[0].video_chId = video_gaoqing;//m_initPrm.initMainchId;
+	m_renders[0].displayrect.w = vdisWH[video_gaoqing][0];
+	m_renders[0].displayrect.h = vdisWH[video_gaoqing][1];
+	m_renders[0].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[0].displayrect.w)/2;
+	m_renders[0].displayrect.y = (VIDEO_DIS_HEIGHT-m_renders[0].displayrect.h)/2;
+
 	m_renders[0].videodect=1;
 
-	m_renders[1].video_chId = -1;
-	m_renders[1].displayrect.x = VIDEO_DIS_WIDTH*2/3;
-	m_renders[1].displayrect.y = VIDEO_DIS_HEIGHT*2/3;
-	m_renders[1].displayrect.w = VIDEO_DIS_WIDTH/3;
-	m_renders[1].displayrect.h = VIDEO_DIS_HEIGHT/3;
+	m_renders[1].video_chId = video_gaoqing0;
+	m_renders[1].displayrect.w = 480;
+	m_renders[1].displayrect.h = 340;
+	m_renders[1].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[1].displayrect.w);
+	m_renders[1].displayrect.y = 0;
 	m_renders[1].videodect=1;
 
-	m_renders[2].videodect=1;
-	m_renders[3].videodect=1;
-	m_renders[4].videodect=1;
 
-	
+	m_renders[2].videodect=0;
+	m_renders[3].videodect=0;
+	m_renders[4].videodect=0;
+
 	m_img_novideo.cols=0;
 	m_img_novideo.rows=0;
 	
@@ -584,6 +579,40 @@ int CDisplayer::dynamic_config(DS_CFG type, int iPrm, void* pPrm)
 
 		m_renders[iPrm].video_chId = chId;
 
+		if(iPrm == 0)
+		{
+			if(video_gaoqing0 == m_renders[iPrm].video_chId)
+			{
+				m_renders[iPrm].displayrect.x = 0;
+				m_renders[iPrm].displayrect.x = 0;
+				m_renders[iPrm].displayrect.w = vdisWH[chId][0];
+				m_renders[iPrm].displayrect.h = vdisWH[chId][1];
+			}
+			else if(video_gaoqing == m_renders[iPrm].video_chId)
+			{
+				m_renders[iPrm].displayrect.w = vdisWH[chId][0];
+				m_renders[iPrm].displayrect.h = vdisWH[chId][1];
+				m_renders[iPrm].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[iPrm].displayrect.w)/2;
+				m_renders[iPrm].displayrect.y = (VIDEO_DIS_HEIGHT-m_renders[iPrm].displayrect.h)/2;
+			}
+		}
+		else
+		{
+			if(video_gaoqing0 == m_renders[iPrm].video_chId)
+			{
+				m_renders[iPrm].displayrect.w = 480;//vdisWH[chId][0]/3;
+				m_renders[iPrm].displayrect.h = 340;//vdisWH[chId][1]/3;
+				m_renders[iPrm].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[iPrm].displayrect.w);
+				m_renders[iPrm].displayrect.y = 0;
+			}
+			else if(video_gaoqing == m_renders[iPrm].video_chId)
+			{
+				m_renders[iPrm].displayrect.w = 480;//vdisWH[chId][0]/2;
+				m_renders[iPrm].displayrect.h = 340;//vdisWH[chId][1]/2;
+				m_renders[iPrm].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[iPrm].displayrect.w);
+				m_renders[iPrm].displayrect.y = 0;
+			}
+		}
 		OSA_printf("%%%%%%%%%%%%render=%d  chid=%d\n",iPrm,chId);
 	}
 	

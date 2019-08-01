@@ -519,7 +519,7 @@ int CVideoProcess::MAIN_threadDestroy(void)
 }
 
 CVideoProcess::CVideoProcess()
-	:m_track(NULL),m_curChId(0),m_curSubChId(-1),adaptiveThred(40)		
+	:m_track(NULL),m_curChId(1),m_curSubChId(0),adaptiveThred(40)		
 {
 	pThis = this;
 	memset(m_mtd, 0, sizeof(m_mtd));

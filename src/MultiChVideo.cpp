@@ -235,7 +235,7 @@ void MultiChVideo::process(int chId)
 				}
 				else if(chId == video_pal)
 				{
-					 	VCap[chId]->parse_line_header2(4,(unsigned char *)VCap[chId]->buffers[buf.index].start);
+					VCap[chId]->parse_line_header2(4,(unsigned char *)VCap[chId]->buffers[buf.index].start);
 				}
 			}
 			if (-1 == v4l2_camera::xioctl(VCap[chId]->m_devFd, VIDIOC_QBUF, &buf)){
@@ -243,7 +243,6 @@ void MultiChVideo::process(int chId)
 				exit(EXIT_FAILURE);
 			}
 		}
-		
 	}
 }
 

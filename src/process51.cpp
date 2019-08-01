@@ -222,7 +222,8 @@ void CProcess::loadIPCParam()
 	cfg_ctrl_mainchReset(pIStuts);
 	m_curChId = pIStuts->SensorStat;
 	pIStuts->SensorStatpri  =   pIStuts->SensorStat;
-	pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0xFF;
+	//pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0xFF;
+	pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0;
 	
 	pIStuts->changeSensorFlag = 0;
 	
@@ -2357,8 +2358,14 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 		{
 			pInCmd = (CMD_EXT *)prm;
 			pIStuts->SensorStat = pInCmd->SensorStat;
-			pIStuts->PicpSensorStat = pInCmd->PicpSensorStat;
+			pIStuts->PicpSensorStat = pInCmd->PicpSensorStat; 
 		}
+		
+		if( video_gaoqing0 == pIStuts->SensorStat)
+			pIStuts->PicpSensorStat = video_gaoqing;
+		else	
+			pIStuts->PicpSensorStat = video_gaoqing0;
+		
 		int itmp;
 		//chage acq;
 		m_rcAcq.width	=	pIStuts->AimW[pIStuts->SensorStat];
@@ -2373,23 +2380,10 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 		itmp = pIStuts->SensorStat;
 		dynamic_config(VP_CFG_MainChId, itmp, NULL);
 
-#if 1//change the sensor picp change too
-		if((pIStuts->PicpSensorStat>=eSen_CH0)&&(pIStuts->PicpSensorStat<eSen_Max))
-		{
-			for(int chi=eSen_CH0;chi<eSen_Max;chi++)
-			{
-				if(pIStuts->ImgPicp[chi]==1)
-					pIStuts->PicpSensorStatpri=pIStuts->PicpSensorStat;
-			}
-			
-		}
-#endif
-
-		itmp = pIStuts->PicpSensorStat;//freeze change
+		itmp = pIStuts->PicpSensorStat;
 		dynamic_config(VP_CFG_SubChId, itmp, NULL);
-
+	#if 0
 //sensor 1 rect
-
 		DS_Rect lay_rect;
 			lay_rect.w = vcapWH[0][0]/3;
 			lay_rect.h = vcapWH[0][1]/3;
@@ -2420,14 +2414,13 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 			lay_rect.x = pIStuts->AxisPosX[pIStuts->SensorStat] - lay_rect.w/2;
 			lay_rect.y = pIStuts->AxisPosY[pIStuts->SensorStat] - lay_rect.h/2;
 		}
-
 		m_display.dynamic_config(CDisplayer::DS_CFG_CropRect, 1, &lay_rect);
 
 //picp position
 		lay_rect=rendpos[pIStuts->PicpPosStat];
 		
 		lay_rect.w = VIDEO_DIS_WIDTH/3;
-		lay_rect.h =VIDEO_DIS_HEIGHT/3;
+		lay_rect.h = VIDEO_DIS_HEIGHT/3;
 		lay_rect.x = VIDEO_DIS_WIDTH*2/3;
 		lay_rect.y = VIDEO_DIS_HEIGHT*2/3;
 		m_display.dynamic_config(CDisplayer::DS_CFG_RenderPosRect, 1, &lay_rect);
@@ -2465,8 +2458,9 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 				m_display.dynamic_config(CDisplayer::DS_CFG_CropRect, 1, &lay_rect);
 			}
 		}
+#endif
 
-
+#if 0
 //mmt show change
 	if(pIStuts->ImgMmtshow[pIStuts->SensorStat^1]==0x01)
 		{
@@ -2507,7 +2501,7 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 		}
 
 		
-		
+#endif		
 	
 	}
 
