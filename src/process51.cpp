@@ -1875,13 +1875,13 @@ osdindex++;	//acqRect
 	{
 		if(changesensorCnt){
 			recIn = mtdFrameRectBak;
-			DrawRect(m_display.m_imgOsd[extInCtrl->SensorStatpri],recIn,0);
+			//DrawRect(m_display.m_imgOsd[extInCtrl->SensorStatpri],recIn,0);
 		}
 
 		if(Osdflag[osdindex])
 		{
 			recIn = mtdFrameRectBak;
-			DrawRect(m_display.m_imgOsd[extInCtrl->SensorStat],recIn,0);
+			//DrawRect(m_display.m_imgOsd[extInCtrl->SensorStat],recIn,0);
 			Osdflag[osdindex]=0;
 		}
 
@@ -1894,7 +1894,7 @@ osdindex++;	//acqRect
 
 			if(!m_bTrack && !m_bSceneTrack)
 			{
-				DrawRect(m_display.m_imgOsd[extInCtrl->SensorStat],recIn,frcolor);
+				//DrawRect(m_display.m_imgOsd[extInCtrl->SensorStat],recIn,frcolor);
 				mtdFrameRectBak = recIn;
 				Osdflag[osdindex]=1;
 			}
@@ -1943,6 +1943,18 @@ osdindex++;	//acqRect
 			{	
 				memcpy(&tmp,&(*plist).trkobj.targetRect,sizeof(cv::Rect));
 				sprintf(trkFPSDisplay, "%2d", (*plist).number);
+				if(mtd_warningbox_Id == 1)
+				{
+					tmp.x = tmp.x + tmp.width/2;
+					tmp.y = tmp.y + tmp.height/2;
+						
+					tmp.x = PiexltoWindowsx(tmp.x , mtd_warningbox_Id);
+					tmp.y = PiexltoWindowsy(tmp.y , mtd_warningbox_Id);
+
+					tmp.width = tmp.width*2;
+					tmp.height = tmp.height*2;		
+				}
+								
 				DrawRect(m_display.m_imgOsd[mtd_warningbox_Id], tmp ,0);
 				putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
 					Point(tmp.x, tmp.y),
@@ -2036,8 +2048,22 @@ osdindex++;	//acqRect
 						color = 3;
 					memcpy((void*)&tmp,(void *)&((*plist).trkobj.targetRect),sizeof(cv::Rect));
 					sprintf(trkFPSDisplay, "%2d", (*plist).number);
+
+					if(mtd_warningbox_Id == 1)
+					{
+						tmp.x = tmp.x + tmp.width/2;
+						tmp.y = tmp.y + tmp.height/2;
+							
+						tmp.x = PiexltoWindowsx(tmp.x , mtd_warningbox_Id);
+						tmp.y = PiexltoWindowsy(tmp.y , mtd_warningbox_Id);
+
+						tmp.width = tmp.width*2;
+						tmp.height = tmp.height*2;		
+					}
+					
 					DrawRect(m_display.m_imgOsd[mtd_warningbox_Id], tmp ,color);
-					putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+
+					putText(m_display.m_imgOsd[mtd_warningbox_Id],trkFPSDisplay,
 						Point(tmp.x, tmp.y),
 						FONT_HERSHEY_TRIPLEX,1,
 						cvScalar(255,255,0,255), 1
@@ -3915,7 +3941,7 @@ void CProcess::MSGAPI_handle_mvAera(long lParam)
 		sThis->polWarnRect[ich][2].x, sThis->polWarnRect[ich][2].y,
 		sThis->polWarnRect[ich][3].x, sThis->polWarnRect[ich][3].y);*/
 
-	pThis->m_pMovDetector->setWarningRoi( polyWarnRoi, ich );
+	//pThis->m_pMovDetector->setWarningRoi( polyWarnRoi, ich );
 }
 
 void CProcess::MSGAPI_handle_mvUpdate(long lParam)
