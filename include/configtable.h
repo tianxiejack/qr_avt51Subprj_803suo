@@ -194,6 +194,7 @@ typedef enum
 #define CFGID_INPUT_CURAIMW(BKID)	CFGID_BUILD( BKID+6, 14 )
 #define CFGID_INPUT_CURAIMH(BKID)	CFGID_BUILD( BKID+6, 15 )
 
+
 // sys config table part end
 ////////////////////////////////////////////////////
 

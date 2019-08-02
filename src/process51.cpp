@@ -212,7 +212,9 @@ void CProcess::loadIPCParam()
 		pIStuts->opticAxisPosX[i] = vdisWH[i][0]/2;
 		pIStuts->opticAxisPosY[i] = vdisWH[i][1]/2;
 	}
-	
+	pIStuts->opticAxisPosX[1] = vcapWH[1][0]/2;
+	pIStuts->opticAxisPosY[1] = vcapWH[1][1]/2;
+
 	pIStuts->unitAimW 		= 	AIM_WIDTH;
 	pIStuts->unitAimH 		= 	AIM_HEIGHT;
 	pIStuts->unitAimX		=	vdisWH[video_pal][0]/2;
@@ -221,6 +223,7 @@ void CProcess::loadIPCParam()
 	//pIStuts->SensorStat 	=   MAIN_CHID;
 	cfg_ctrl_mainchReset(pIStuts);
 	m_curChId = pIStuts->SensorStat;
+printf("\n\n\n\n******************   m_curChid = %d \n",m_curChId);
 	pIStuts->SensorStatpri  =   pIStuts->SensorStat;
 	//pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0xFF;
 	pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0;
@@ -228,7 +231,7 @@ void CProcess::loadIPCParam()
 	pIStuts->changeSensorFlag = 0;
 	
 	pIStuts->AvtTrkAimSize= AVT_TRK_AIM_SIZE;
-
+	
 	for(int i = 0; i < MAX_CHAN; i++)
 	{
 		pIStuts->AvtPosX[i] = pIStuts->AxisPosX[i] = pIStuts->opticAxisPosX[i];
@@ -1821,7 +1824,7 @@ osdindex++;	//acqRect
  		}
 
 		if(!m_bMoveDetect && !m_bSceneTrack)
-		{
+		{			
 			if(extInCtrl->AvtTrkStat == eTrk_mode_acq  && !changesensorCnt){
 				recIn.x  = PiexltoWindowsx(extInCtrl->AxisPosX[extInCtrl->SensorStat],extInCtrl->SensorStat);
 		 		recIn.y  = PiexltoWindowsy(extInCtrl->AxisPosY[extInCtrl->SensorStat],extInCtrl->SensorStat);

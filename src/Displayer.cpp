@@ -252,8 +252,8 @@ int CDisplayer::initRender(bool bInitBind)
 	m_renders[0].croprect.h=0;
 	
 	m_renders[0].video_chId = video_gaoqing;//m_initPrm.initMainchId;
-	m_renders[0].displayrect.w = vdisWH[video_gaoqing][0];
-	m_renders[0].displayrect.h = vdisWH[video_gaoqing][1];
+	m_renders[0].displayrect.w = 2*vcapWH[video_gaoqing][0];
+	m_renders[0].displayrect.h = 2*vcapWH[video_gaoqing][1];
 	m_renders[0].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[0].displayrect.w)/2;
 	m_renders[0].displayrect.y = (VIDEO_DIS_HEIGHT-m_renders[0].displayrect.h)/2;
 
@@ -590,8 +590,8 @@ int CDisplayer::dynamic_config(DS_CFG type, int iPrm, void* pPrm)
 			}
 			else if(video_gaoqing == m_renders[iPrm].video_chId)
 			{
-				m_renders[iPrm].displayrect.w = vdisWH[chId][0];
-				m_renders[iPrm].displayrect.h = vdisWH[chId][1];
+				m_renders[iPrm].displayrect.w = 2*vcapWH[chId][0];
+				m_renders[iPrm].displayrect.h = 2*vcapWH[chId][1];
 				m_renders[iPrm].displayrect.x = (VIDEO_DIS_WIDTH-m_renders[iPrm].displayrect.w)/2;
 				m_renders[iPrm].displayrect.y = (VIDEO_DIS_HEIGHT-m_renders[iPrm].displayrect.h)/2;
 			}
@@ -1164,8 +1164,8 @@ void CDisplayer::gl_init()
 
 	for(i=0; i<DS_DC_CNT; i++)
 	{
-		m_disOsd[i]    = cv::Mat(vcapWH[i][1], vcapWH[i][0], CV_8UC4, cv::Scalar(0,0,0,0));
-		m_imgOsd[i] = cv::Mat(vcapWH[i][1], vcapWH[i][0], CV_8UC4, cv::Scalar(0,0,0,0));
+		m_disOsd[i]    = cv::Mat(vdisWH[i][1], vdisWH[i][0], CV_8UC4, cv::Scalar(0,0,0,0));
+		m_imgOsd[i] = cv::Mat(vdisWH[i][1], vdisWH[i][0], CV_8UC4, cv::Scalar(0,0,0,0));
 		
 		glBindTexture(GL_TEXTURE_2D, textureId_osd[i]);
 		assert(glIsTexture(textureId_osd[i]));

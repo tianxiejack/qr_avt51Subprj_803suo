@@ -175,6 +175,7 @@ void cfg_ctrl_sysInit(int * configTab)
 
 void cfg_ctrl_osdInit(int * configTab, unsigned char *configUser)
 {
+
 	int id;
 	for(id=0; id<CFGID_USEROSD_MAX; id++)
 	{
@@ -185,9 +186,9 @@ void cfg_ctrl_osdInit(int * configTab, unsigned char *configUser)
 		setlocale(LC_ALL, "zh_CN.UTF-8");
 		swprintf(gCFG_Osd.disBuf[id], 33, L"%s", (char *)&(configUser[id*USEROSD_LENGTH]));
 		//printf("usrosd[%d] init show %d pos %d,%d font %d size %d\n",
-		//	id, gCFG_Osd.items[id].ctrl,
-		//	gCFG_Osd.items[id].posx, gCFG_Osd.items[id].posy,
-		//	gCFG_Osd.items[id].font, gCFG_Osd.items[id].fontsize);
+		//id, gCFG_Osd.items[id].ctrl,
+		//gCFG_Osd.items[id].posx, gCFG_Osd.items[id].posy,
+		//gCFG_Osd.items[id].font, gCFG_Osd.items[id].fontsize);
 	}
 }
 
@@ -197,8 +198,10 @@ void cfg_ctrl_mainchReset(void *inprm)
 	CMD_EXT * pIStuts = (CMD_EXT *)inprm;
 	///////////////////
 	pIStuts->SensorStat = configTab[CFGID_RTS_mainch];
+printf("\n\n\n\n******************	 configTab[%d] = %d \n",CFGID_RTS_mainch,configTab[CFGID_RTS_mainch]);
 
 }
+
 
 void cfg_ctrl_acqReset(void *inprm)
 {
