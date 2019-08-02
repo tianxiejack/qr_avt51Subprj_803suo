@@ -290,9 +290,7 @@ void CVideoProcess::main_proc_func()
 				m_searchmod=0;
 			}
 
-
 			m_iTrackStat = process_track(iTrackStat, frame_gray, frame_gray, m_rcTrack);
-
 		
 			putText(m_display.m_imgOsd[msgextInCtrl->SensorStat],trkINFODisplay,
 				Point( 10, 25),

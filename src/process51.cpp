@@ -209,11 +209,9 @@ void CProcess::loadIPCParam()
 	
 	for(int i = 0; i < MAX_CHAN; i++)
 	{
-		pIStuts->opticAxisPosX[i] = vdisWH[i][0]/2;
-		pIStuts->opticAxisPosY[i] = vdisWH[i][1]/2;
+		pIStuts->opticAxisPosX[i] = vcapWH[i][0]/2;
+		pIStuts->opticAxisPosY[i] = vcapWH[i][1]/2;
 	}
-	pIStuts->opticAxisPosX[1] = vcapWH[1][0]/2;
-	pIStuts->opticAxisPosY[1] = vcapWH[1][1]/2;
 
 	pIStuts->unitAimW 		= 	AIM_WIDTH;
 	pIStuts->unitAimH 		= 	AIM_HEIGHT;
@@ -223,7 +221,7 @@ void CProcess::loadIPCParam()
 	//pIStuts->SensorStat 	=   MAIN_CHID;
 	cfg_ctrl_mainchReset(pIStuts);
 	m_curChId = pIStuts->SensorStat;
-printf("\n\n\n\n******************   m_curChid = %d \n",m_curChId);
+
 	pIStuts->SensorStatpri  =   pIStuts->SensorStat;
 	//pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0xFF;
 	pIStuts->PicpSensorStatpri	=	pIStuts->PicpSensorStat = 0;
@@ -336,6 +334,7 @@ float  CProcess::PiexltoWindowsx(int x,int channel)
 {
 	 float ret=0;
 	 ret= cvRound(x*1.0/vcapWH[channel][0]*vdisWH[channel][0]);
+	 
 	 if(ret<0)
  	 {
 		ret=0;
@@ -473,7 +472,7 @@ int  CProcess::PiexltoWindowsyzoom_TrkRect(int y,int channel)
 	 int ret=0;
 
 	 ret= cvRound(y*1.0/vcapWH[channel][1]*vdisWH[channel][1]);
-
+	
 	if(ret<0)
  	{
 		ret=0;
@@ -1563,7 +1562,6 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 		 {	 
 			extInCtrl->TrkXtmp = rcResult.x + rcResult.width/2;
 			extInCtrl->TrkYtmp = rcResult.y + rcResult.height/2;
-
 			startx=PiexltoWindowsxzoom_TrkRect(rcResult.x+rcResult.width/2-aimw/2,extInCtrl->SensorStat);			
 			starty=PiexltoWindowsyzoom_TrkRect(rcResult.y+rcResult.height/2-aimh/2 ,extInCtrl->SensorStat);
 			endx  =PiexltoWindowsxzoom_TrkRect(rcResult.x+rcResult.width/2+aimw/2,extInCtrl->SensorStat);
@@ -1579,12 +1577,13 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 
 			if( m_iTrackStat == 1 && !changesensorCnt)
 			{		
+				
 				if(gSYS_Osd.algOsdRect == true)
 				{
 					rectangle( m_display.m_imgOsd[extInCtrl->SensorStat],
-						Point( rcResult_algRect.x, rcResult_algRect.y ),
-						Point( rcResult_algRect.x+rcResult_algRect.width, rcResult_algRect.y+rcResult_algRect.height),
-						cvScalar(0,255,0,255), 1, 8 );
+					Point( rcResult_algRect.x, rcResult_algRect.y ),
+					Point( rcResult_algRect.x+rcResult_algRect.width, rcResult_algRect.y+rcResult_algRect.height),
+					cvScalar(0,255,0,255), 1, 8 );
 				}
 				else
 				{
@@ -1684,8 +1683,10 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 			#if __IPC__
 				if(extInCtrl->TrkStat != 3)
 				{
-						extInCtrl->trkerrx = extInCtrl->trkerrx - extInCtrl->opticAxisPosX[extInCtrl->SensorStat];
-						extInCtrl->trkerry = extInCtrl->trkerry - extInCtrl->opticAxisPosY[extInCtrl->SensorStat];
+					extInCtrl->trkerrx = rcResult.x + rcResult.width/2;
+					extInCtrl->trkerry = rcResult.y + rcResult.height/2;					
+					extInCtrl->trkerrx = extInCtrl->trkerrx - extInCtrl->opticAxisPosX[extInCtrl->SensorStat];
+					extInCtrl->trkerry = extInCtrl->trkerry - extInCtrl->opticAxisPosY[extInCtrl->SensorStat];
 				}
 				else
 				{
@@ -1696,30 +1697,30 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 
 				#if 0
 				if(m_display.disptimeEnable == 1){
-				//test zhou qi  time
-				int64 disptime = 0;
-				disptime = getTickCount();
-				double curtime = (disptime/getTickFrequency())*1000;
-				static double pretime = 0.0;
-				double time = curtime - pretime;
-				pretime = curtime;
+					//test zhou qi  time
+					int64 disptime = 0;
+					disptime = getTickCount();
+					double curtime = (disptime/getTickFrequency())*1000;
+					static double pretime = 0.0;
+					double time = curtime - pretime;
+					pretime = curtime;
 
-				if(m_display.disptimeEnable == 1)
-				{
-					putText(m_display.m_imgOsd[1],trkFPSDisplay,
-							Point( m_display.m_imgOsd[1].cols-350, 25),
-							FONT_HERSHEY_TRIPLEX,0.8,
-							cvScalar(0,0,0,0), 1
-							);
-					sprintf(trkFPSDisplay, "trkerr time = %0.3fFPS", 1000.0/time);
-					putText(m_display.m_imgOsd[1],trkFPSDisplay,
-							Point(m_display.m_imgOsd[1].cols-350, 25),
-							FONT_HERSHEY_TRIPLEX,0.8,
-							cvScalar(255,255,0,255), 1
-							);
+					if(m_display.disptimeEnable == 1)
+					{
+						putText(m_display.m_imgOsd[1],trkFPSDisplay,
+								Point( m_display.m_imgOsd[1].cols-350, 25),
+								FONT_HERSHEY_TRIPLEX,0.8,
+								cvScalar(0,0,0,0), 1
+								);
+						sprintf(trkFPSDisplay, "trkerr time = %0.3fFPS", 1000.0/time);
+						putText(m_display.m_imgOsd[1],trkFPSDisplay,
+								Point(m_display.m_imgOsd[1].cols-350, 25),
+								FONT_HERSHEY_TRIPLEX,0.8,
+								cvScalar(255,255,0,255), 1
+								);
+					}
 				}
-			}
-			#endif
+				#endif
 			#endif	
 				
 		 }
@@ -1828,7 +1829,7 @@ osdindex++;	//acqRect
 			if(extInCtrl->AvtTrkStat == eTrk_mode_acq  && !changesensorCnt){
 				recIn.x  = PiexltoWindowsx(extInCtrl->AxisPosX[extInCtrl->SensorStat],extInCtrl->SensorStat);
 		 		recIn.y  = PiexltoWindowsy(extInCtrl->AxisPosY[extInCtrl->SensorStat],extInCtrl->SensorStat);
-
+				
 		 		if(m_display.m_boxOsd)
 			 	{
 					recIn.width  = extInCtrl->AcqRectW[extInCtrl->SensorStat];
@@ -2055,6 +2056,7 @@ osdindex++;	//acqRect
 	prisensorstatus=extInCtrl->SensorStat;
 
 //mouse rect
+/*
 	unsigned int drawRectId ;
 	if(m_draw)
 	{    
@@ -2096,8 +2098,9 @@ osdindex++;	//acqRect
 		}
 		m_draw = 0;
 	}
-
+*/
 //polygon mtd area
+/*
 unsigned int drawpolyRectId ;   
 	drawpolyRectId = extInCtrl->SensorStat;
 	if(pol_draw)
@@ -2165,7 +2168,7 @@ unsigned int drawpolyRectId ;
 		}
 		pol_draw = 0;
 	}
-
+*/
 	for(int i=0; i<algboxBK.size(); i++)
 	{
 		cv::Rect r = algboxBK[i];
@@ -2235,7 +2238,8 @@ void CProcess::OnKeyDwn(unsigned char key)
 	if(key == 'a' || key == 'A')
 	{
 		tmpCmd.SensorStat = (pIStuts->SensorStat + 1)%MAX_CHAN;
-		app_ctrl_setSensor(&tmpCmd);		
+		app_ctrl_setSensor(&tmpCmd);	
+		cfg_set_outSensor(tmpCmd.SensorStat, tmpCmd.SensorStat);
 	}
 
 	if(key == 'b' || key == 'B')
@@ -2619,11 +2623,14 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 			rc.height=pIStuts->AimH[pIStuts->SensorStat];
 			pIStuts->unitAimX = pIStuts->AvtPosX[pIStuts->SensorStat];
 			pIStuts->unitAimY = pIStuts->AvtPosY[pIStuts->SensorStat];
-/*
-			printf("AvtPosX[%d] , AvtPosY[%d] (%d,%d) \n",pIStuts->SensorStat,
+
+			#if 0
+			printf("\n\n AvtPosX[%d] , AvtPosY[%d] (%d,%d) \n",pIStuts->SensorStat,
 				pIStuts->SensorStat,pIStuts->AvtPosX[pIStuts->SensorStat],
 				pIStuts->AvtPosY[pIStuts->SensorStat]);
-*/
+
+			printf("AimW , AimH = (%d  , %d ) \n" ,pIStuts->AimW[pIStuts->SensorStat],pIStuts->AimH[pIStuts->SensorStat] );
+			#endif
 		}
 		else if(m_curChId == video_pal)
 		{
