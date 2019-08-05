@@ -728,6 +728,8 @@ void* recv_msgpth(SENDST *pInData)
 	{
 		return NULL ;
 	}
+	
+	CMD_EXT tmpCmd = {0};
 
 	CMD_EXT inCtrl, *pMsg = NULL;
 	pMsg = &inCtrl;
@@ -877,27 +879,36 @@ void* recv_msgpth(SENDST *pInData)
 
 		case trk:	
 			{
-				unsigned int AvtTrkStat = pIn->intPrm[0];
-				if(AvtTrkStat == 0x1)
-					pMsg->AvtTrkStat =eTrk_mode_target;
-				else
-					pMsg->AvtTrkStat = eTrk_mode_acq;
-
-				if(pMsg->AvtTrkStat == eTrk_mode_acq)
-				{
-					pMsg->AxisPosX[pMsg->SensorStat] = pMsg->opticAxisPosX[pMsg->SensorStat];
-					pMsg->AxisPosY[pMsg->SensorStat] = pMsg->opticAxisPosY[pMsg->SensorStat];
-					pMsg->AvtPosX[pMsg->SensorStat]  = pMsg->AxisPosX[pMsg->SensorStat];
-					pMsg->AvtPosY[pMsg->SensorStat]  = pMsg->AxisPosY[pMsg->SensorStat];
-					pMsg->AimW[pMsg->SensorStat]  = pMsg->AcqRectW[pMsg->SensorStat];
-					pMsg->AimH[pMsg->SensorStat]  = pMsg->AcqRectH[pMsg->SensorStat];
-					app_ctrl_setAimPos(pMsg);
-					app_ctrl_setAxisPos(pMsg);
-					app_ctrl_setAimSize(pMsg);
+				if(pMsg->MtdState[pMsg->SensorStat] == 1)
+				{	
+					unsigned int ImgMmtSelect = pIn->intPrm[0];
+					pMsg->MtdSelect[pMsg->SensorStat] = ImgMmtSelect;
+					app_ctrl_setMtdSelect(pMsg);	
 				}
-
-				app_ctrl_setTrkStat(pMsg); 
-				cfg_set_trkSecStat(0);	// set sectrk close when exit trk 
+				else
+				{
+					unsigned int AvtTrkStat = pIn->intPrm[0];
+					if(AvtTrkStat == 0x1)
+						pMsg->AvtTrkStat =eTrk_mode_target;
+					else
+						pMsg->AvtTrkStat = eTrk_mode_acq;
+					
+					if(pMsg->AvtTrkStat == eTrk_mode_acq)
+					{
+						pMsg->AxisPosX[pMsg->SensorStat] = pMsg->opticAxisPosX[pMsg->SensorStat];
+						pMsg->AxisPosY[pMsg->SensorStat] = pMsg->opticAxisPosY[pMsg->SensorStat];
+						pMsg->AvtPosX[pMsg->SensorStat]  = pMsg->AxisPosX[pMsg->SensorStat];
+						pMsg->AvtPosY[pMsg->SensorStat]  = pMsg->AxisPosY[pMsg->SensorStat];
+						pMsg->AimW[pMsg->SensorStat]  = pMsg->AcqRectW[pMsg->SensorStat];
+						pMsg->AimH[pMsg->SensorStat]  = pMsg->AcqRectH[pMsg->SensorStat];
+						app_ctrl_setAimPos(pMsg);
+						app_ctrl_setAxisPos(pMsg);
+						app_ctrl_setAimSize(pMsg);
+					}
+					
+					app_ctrl_setTrkStat(pMsg); 
+					cfg_set_trkSecStat(0);	// set sectrk close when exit trk 
+				}
 			}
 			break;
 	
@@ -1071,6 +1082,26 @@ void* recv_msgpth(SENDST *pInData)
 
 		case exit_img:
 			ipc_loop = 0;			
+			break;
+
+		case switchPip:
+			if(pIn->intPrm[0] == 2)
+			{
+				tmpCmd.SensorStat = video_gaoqing;
+				app_ctrl_setSensor(&tmpCmd);	
+				cfg_set_outSensor(tmpCmd.SensorStat, tmpCmd.SensorStat);			
+			}
+			else if(pIn->intPrm[0] == 3)
+			{
+				tmpCmd.SensorStat = video_gaoqing0;
+				app_ctrl_setSensor(&tmpCmd);	
+				cfg_set_outSensor(tmpCmd.SensorStat, tmpCmd.SensorStat);			
+			}
+			break;
+
+		case stb:
+				tmpCmd.ImgStableStat[pMsg->SensorStat] = pIn->intPrm[0];
+				app_ctrl_setStable(&tmpCmd);
 			break;
 
 		default:

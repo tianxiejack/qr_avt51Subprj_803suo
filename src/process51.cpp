@@ -1962,7 +1962,6 @@ osdindex++;	//acqRect
 					cvScalar(0,0,0,0), 1
 					);
 			}
-		
 			Osdflag[osdindex]=0;
 		}
 
