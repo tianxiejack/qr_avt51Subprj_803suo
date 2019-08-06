@@ -1436,41 +1436,37 @@ int CVideoProcess::process_track(int trackStatus, Mat frame_gray, Mat frame_dis,
 		acq.rcWin.height = (int)(rcResult.height);
 
 		if(acq.rcWin.width<0)
-			{
-				acq.rcWin.width=0;
-
-			}
+		{
+			acq.rcWin.width=0;
+		}
 		else if(acq.rcWin.width>= image.width)
-			{
-				acq.rcWin.width=60;
-			}
+		{
+			acq.rcWin.width=60;
+		}
 		if(acq.rcWin.height<0)
-			{
-				acq.rcWin.height=0;
-
-			}
+		{
+			acq.rcWin.height=0;
+		}
 		else if(acq.rcWin.height>= image.height)
-			{
-				acq.rcWin.height=60;
-			}
+		{
+			acq.rcWin.height=60;
+		}
 		if(acq.rcWin.x<0)
-			{
-				acq.rcWin.x=0;
-			}
+		{
+			acq.rcWin.x=0;
+		}
 		else if(acq.rcWin.x>image.width-acq.rcWin.width)
-			{
-
-				acq.rcWin.x=image.width-acq.rcWin.width;
-			}
+		{
+			acq.rcWin.x=image.width-acq.rcWin.width;
+		}
 		if(acq.rcWin.y<0)
-			{
-				acq.rcWin.y=0;
-			}
+		{
+			acq.rcWin.y=0;
+		}
 		else if(acq.rcWin.y>image.height-acq.rcWin.height)
-			{
-
-				acq.rcWin.y=image.height-acq.rcWin.height;
-			}
+		{
+			acq.rcWin.y=image.height-acq.rcWin.height;
+		}
 
 		{
 			//printf("=========movestat = %d\n",moveStat);

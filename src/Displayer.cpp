@@ -584,7 +584,7 @@ int CDisplayer::dynamic_config(DS_CFG type, int iPrm, void* pPrm)
 			if(video_gaoqing0 == m_renders[iPrm].video_chId)
 			{
 				m_renders[iPrm].displayrect.x = 0;
-				m_renders[iPrm].displayrect.x = 0;
+				m_renders[iPrm].displayrect.y = 0;
 				m_renders[iPrm].displayrect.w = vdisWH[chId][0];
 				m_renders[iPrm].displayrect.h = vdisWH[chId][1];
 			}
@@ -1896,9 +1896,10 @@ void CDisplayer::gl_display(void)
 		glDisable(GL_BLEND);
 
 		
-		IrisAndFocus();
-		OSDChid();
-		OSDWorkMode();
+		//IrisAndFocus();
+		//OSDChid();
+		//OSDWorkMode();
+		OSDERR();
 		if(m_userOsd)
 			OSDFunc();
 	}
@@ -2004,6 +2005,16 @@ void CDisplayer::IrisAndFocus()
 	case Disable:
 		break;
 	}
+}
+
+void CDisplayer::OSDERR()
+{
+	int x = 1600, y = 50, y1 = 80;
+	int R = 255, G = 255, B = 255;
+
+	chinese_osd(x,y,L"脱靶量x:",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+	chinese_osd(x,y1,L"脱靶量y:",1,4,R,G,B,255,VIDEO_DIS_WIDTH,VIDEO_DIS_HEIGHT);
+
 }
 
 void CDisplayer::OSDWorkMode()

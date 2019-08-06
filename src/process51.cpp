@@ -1363,6 +1363,10 @@ void CProcess::switchMvTargetForwad()
 			chooseDetect = (chooseDetect + 1)%10;
 		}while(!validMtdRecord[chooseDetect]);
 	}	
+
+	//for(int i=0;i<10;i++)
+		//printf("validMtdRecord[%d] = %d \n" ,i, validMtdRecord[i]);
+		
 	return ;
 }
 
@@ -1492,7 +1496,8 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 	static unsigned char bdrawMvRect = 0;		
 	static int changesensorCnt = 0;
 	static cv::Rect sceneBak;
-	
+	static float errxbak,errybak;
+	int errosdposx = 1700 ,errosdposy = 75,errosdposy1 = 105;
 	if(extInCtrl->changeSensorFlag == 1)
 		++changesensorCnt;
 	if(changesensorCnt == 3){
@@ -1558,6 +1563,21 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 				cvScalar(0,0,0, 0), 1, 8 );
 			Osdflag[osdindex]=0;
 		}
+
+			sprintf(trkFPSDisplay, "%0.3f",errxbak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point( errosdposx, errosdposy),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(0,0,0,0), 1
+					);
+			sprintf(trkFPSDisplay, "%0.3f",errybak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point( errosdposx, errosdposy1),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(0,0,0,0), 1
+					);
+			
+		
 		 if(m_bTrack)
 		 {	 
 			extInCtrl->TrkXtmp = rcResult.x + rcResult.width/2;
@@ -1695,6 +1715,10 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 				}
 				cfg_set_trkFeedback(extInCtrl->TrkStat, extInCtrl->trkerrx, extInCtrl->trkerry);
 
+
+				errxbak = extInCtrl->trkerrx;
+				errybak = extInCtrl->trkerry;
+				
 				#if 0
 				if(m_display.disptimeEnable == 1){
 					//test zhou qi  time
@@ -1728,6 +1752,52 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 		{
 			rememflag=false;
 			extInCtrl->TrkErrFeedback = 0;
+		}
+
+		if(!m_bTrack)
+		{	
+			sprintf(trkFPSDisplay, "%0.3f",errxbak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point( errosdposx, errosdposy),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(0,0,0,0), 1
+					);
+			sprintf(trkFPSDisplay, "%0.3f",errybak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point( errosdposx, errosdposy1),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(0,0,0,0), 1
+					);
+
+			errxbak = errybak = 0;
+			
+			sprintf(trkFPSDisplay, "%0.3f",errxbak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point(errosdposx, errosdposy),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(255,255,0,255), 1
+					);
+			sprintf(trkFPSDisplay, "%0.3f",errybak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point(errosdposx, errosdposy1),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(255,255,0,255), 1
+					);		
+		}
+		else
+		{			
+			sprintf(trkFPSDisplay, "%0.3f",errxbak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point( errosdposx, errosdposy),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(255,255,0,255), 1
+					);
+			sprintf(trkFPSDisplay, "%0.3f",errybak);			
+			putText(m_display.m_imgOsd[extInCtrl->SensorStat],trkFPSDisplay,
+					Point(errosdposx, errosdposy1),
+					FONT_HERSHEY_TRIPLEX,0.8,
+					cvScalar(255,255,0,255), 1
+					);
 		}
 	}
 #endif
@@ -2002,7 +2072,7 @@ osdindex++;	//acqRect
 				backflag = 0;
 			}
 			
-			#if 1
+			#if 0
 			switch(gCFG_Mtd.priority)
 			{
 				case 1:
@@ -2259,7 +2329,112 @@ void CProcess::OnKeyDwn(unsigned char key)
 	char flag = 0;
 	CMD_EXT *pIStuts = extInCtrl;
 	CMD_EXT tmpCmd = {0};
+	
+	static bool bTrack = false;	
+	static bool bdismode = true;
+	static bool bstb = false;
+	static bool bmtd = false;
 
+	if(key == 48) // 0
+	{
+		bdismode = !bdismode;
+		if(bdismode)
+		{
+			tmpCmd.SensorStat = video_gaoqing;
+			app_ctrl_setSensor(&tmpCmd);	
+			cfg_set_outSensor(tmpCmd.SensorStat, tmpCmd.SensorStat);			
+		}
+		else
+		{
+			tmpCmd.SensorStat = video_gaoqing0;
+			app_ctrl_setSensor(&tmpCmd);	
+			cfg_set_outSensor(tmpCmd.SensorStat, tmpCmd.SensorStat);			
+		}
+			
+	}
+	else if(key == 49) // 1
+	{
+		bTrack =! bTrack;
+
+		if(pIStuts->MtdState[pIStuts->SensorStat] == 1)
+		{	
+			tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x3;
+			app_ctrl_setMtdSelect(&tmpCmd);	
+		}
+		else
+		{
+			unsigned int AvtTrkStat = bTrack;
+			if(AvtTrkStat == 0x1)
+				tmpCmd.AvtTrkStat =eTrk_mode_target;
+			else
+				tmpCmd.AvtTrkStat = eTrk_mode_acq;
+			
+			if(tmpCmd.AvtTrkStat == eTrk_mode_acq)
+			{
+				tmpCmd.AxisPosX[pIStuts->SensorStat] = pIStuts->opticAxisPosX[pIStuts->SensorStat];
+				tmpCmd.AxisPosY[pIStuts->SensorStat] = pIStuts->opticAxisPosY[pIStuts->SensorStat];
+				tmpCmd.AvtPosX[pIStuts->SensorStat]  = tmpCmd.AxisPosX[pIStuts->SensorStat];
+				tmpCmd.AvtPosY[pIStuts->SensorStat]  = tmpCmd.AxisPosY[pIStuts->SensorStat];
+				tmpCmd.AimW[pIStuts->SensorStat]  = pIStuts->AcqRectW[pIStuts->SensorStat];
+				tmpCmd.AimH[pIStuts->SensorStat]  = pIStuts->AcqRectH[pIStuts->SensorStat];
+				app_ctrl_setAimPos(&tmpCmd);
+				app_ctrl_setAxisPos(&tmpCmd);
+				app_ctrl_setAimSize(&tmpCmd);
+			}
+			app_ctrl_setTrkStat(&tmpCmd); 
+			cfg_set_trkSecStat(0);//set sectrk close when exit trk 
+		}
+	}
+	else if(key == 50) // 2	close mtd & stb
+	{
+		bmtd = false;
+		if(pIStuts->MtdState[pIStuts->SensorStat])
+			tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Disable;
+		app_ctrl_setMtdStat(&tmpCmd);
+
+		bstb = false;
+		if(pIStuts->ImgStableStat[pIStuts->SensorStat])
+			tmpCmd.ImgStableStat[pIStuts->SensorStat] = bstb;
+		app_ctrl_setStable(&tmpCmd);
+	}
+	else if(key == 51) // 3	mtd
+	{
+		bmtd = !bmtd;
+		if(bmtd)
+			tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Enable;
+		//else
+			//tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Disable;
+		app_ctrl_setMtdStat(&tmpCmd);
+	}
+	else if(key == 52) // 4	stb
+	{
+		bstb = !bstb;
+		if(bstb)
+			tmpCmd.ImgStableStat[pIStuts->SensorStat] = eImgAlg_Enable;
+		app_ctrl_setStable(&tmpCmd);
+	}
+	else if(key == 53) // 5	up
+	{
+		tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x1;
+		app_ctrl_setMtdSelect(&tmpCmd);
+	}
+	else if(key == 54) // 6	down
+	{
+		tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x2;
+		app_ctrl_setMtdSelect(&tmpCmd);
+	}
+	else if(key == 55) // 7
+	{
+	}
+	else if(key == 56) // 8
+	{
+	}
+	else if(key == 57) // 9
+	{
+	}
+
+	return;
+	
 	if(key == 'a' || key == 'A')
 	{
 		tmpCmd.SensorStat = (pIStuts->SensorStat + 1)%MAX_CHAN;
@@ -3052,11 +3227,7 @@ void CProcess::msgdriv_event(MSG_PROC_ID msgId, void *prm)
 		else if(eMTD_Prev == MtdSelect)
 		{
 			backflag = true;
-		}
-		else if(eMTD_Select == MtdSelect)
-		{
-
-		}
+		} 
 	}
 #endif
 	

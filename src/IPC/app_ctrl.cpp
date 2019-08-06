@@ -239,20 +239,19 @@ void app_ctrl_setMtdSelect(CMD_EXT * pInCmd)
 		getMtdxy(curx, cury, curw, curh);
 		if( -1 == curw || -1 == curh )	
 		{
-			//do nothing
-			printf(" mtd target get failed do nothing \n");
+ 			printf(" mtd target get failed do nothing \n");
 		}
 		else
 		{
+			pMsg.MtdState[pMsg.SensorStat] = eImgAlg_Disable;
+			app_ctrl_setMtdStat(&pMsg);//close
+
 			pMsg.AvtTrkStat =eTrk_mode_sectrk;
 			pMsg.AvtPosX[pIStuts->SensorStat]  = curx;
 			pMsg.AvtPosY[pIStuts->SensorStat]  = cury;
 			pMsg.AimW[pIStuts->SensorStat]  = curw;
 			pMsg.AimH[pIStuts->SensorStat]  = curh;
 			app_ctrl_setTrkStat(&pMsg);//track
-
-			//pMsg.MtdState[pMsg.SensorStat] = eImgAlg_Disable;
-			//app_ctrl_setMtdStat(&pMsg);//close
 		}	
 	}
 	return ;

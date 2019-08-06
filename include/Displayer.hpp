@@ -346,6 +346,7 @@ public:
 	int OSDChid();
 	void drawtriangle(Mat frame, int direction, int alpha);
 	void OSDWorkMode();
+	void OSDERR();
 
 	void startStbParam(int chid);
 	void stopStbParam(int chid);
