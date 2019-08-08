@@ -17,6 +17,8 @@
 #include "Ipc.hpp"
 #include "encTrans.hpp"
 
+
+extern int startEnable;
 extern int ScalerLarge,ScalerMid,ScalerSmall;
 extern LinkagePos_t linkagePos; 
 extern OSDSTATUS gSYS_Osd;
@@ -82,7 +84,6 @@ CProcess::~CProcess()
 		OSA_memFree(extInCtrl);
 		extInCtrl = NULL;
 	}
-
 	sThis=NULL;
 }
 
@@ -1713,7 +1714,7 @@ bool CProcess::OnProcess(int chId, Mat &frame)
 					extInCtrl->trkerrx = 0;
 					extInCtrl->trkerry = 0;
 				}
-				cfg_set_trkFeedback(extInCtrl->TrkStat, extInCtrl->trkerrx, extInCtrl->trkerry);
+				cfg_set_trkFeedback(extInCtrl->TrkStat, extInCtrl->trkerrx, extInCtrl->trkerry,m_renderCount);
 
 
 				errxbak = extInCtrl->trkerrx;
@@ -2327,8 +2328,11 @@ void CProcess::OnSpecialKeyDwn(int key,int x, int y)
 void CProcess::OnKeyDwn(unsigned char key)
 {
 	char flag = 0;
-	CMD_EXT *pIStuts = extInCtrl;
+	//CMD_EXT *pIStuts = extInCtrl;
+	
 	CMD_EXT tmpCmd = {0};
+	if(startEnable)
+		app_ctrl_getSysData(&tmpCmd);
 	
 	static bool bTrack = false;	
 	static bool bdismode = true;
@@ -2356,9 +2360,9 @@ void CProcess::OnKeyDwn(unsigned char key)
 	{
 		bTrack =! bTrack;
 
-		if(pIStuts->MtdState[pIStuts->SensorStat] == 1)
+		if(tmpCmd.MtdState[tmpCmd.SensorStat] == 1)
 		{	
-			tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x3;
+			tmpCmd.MtdSelect[tmpCmd.SensorStat] = 0x3;
 			app_ctrl_setMtdSelect(&tmpCmd);	
 		}
 		else
@@ -2371,12 +2375,12 @@ void CProcess::OnKeyDwn(unsigned char key)
 			
 			if(tmpCmd.AvtTrkStat == eTrk_mode_acq)
 			{
-				tmpCmd.AxisPosX[pIStuts->SensorStat] = pIStuts->opticAxisPosX[pIStuts->SensorStat];
-				tmpCmd.AxisPosY[pIStuts->SensorStat] = pIStuts->opticAxisPosY[pIStuts->SensorStat];
-				tmpCmd.AvtPosX[pIStuts->SensorStat]  = tmpCmd.AxisPosX[pIStuts->SensorStat];
-				tmpCmd.AvtPosY[pIStuts->SensorStat]  = tmpCmd.AxisPosY[pIStuts->SensorStat];
-				tmpCmd.AimW[pIStuts->SensorStat]  = pIStuts->AcqRectW[pIStuts->SensorStat];
-				tmpCmd.AimH[pIStuts->SensorStat]  = pIStuts->AcqRectH[pIStuts->SensorStat];
+				tmpCmd.AxisPosX[tmpCmd.SensorStat] = tmpCmd.opticAxisPosX[tmpCmd.SensorStat];
+				tmpCmd.AxisPosY[tmpCmd.SensorStat] = tmpCmd.opticAxisPosY[tmpCmd.SensorStat];
+				tmpCmd.AvtPosX[tmpCmd.SensorStat]  = tmpCmd.AxisPosX[tmpCmd.SensorStat];
+				tmpCmd.AvtPosY[tmpCmd.SensorStat]  = tmpCmd.AxisPosY[tmpCmd.SensorStat];
+				tmpCmd.AimW[tmpCmd.SensorStat]  = tmpCmd.AcqRectW[tmpCmd.SensorStat];
+				tmpCmd.AimH[tmpCmd.SensorStat]  = tmpCmd.AcqRectH[tmpCmd.SensorStat];
 				app_ctrl_setAimPos(&tmpCmd);
 				app_ctrl_setAxisPos(&tmpCmd);
 				app_ctrl_setAimSize(&tmpCmd);
@@ -2388,20 +2392,20 @@ void CProcess::OnKeyDwn(unsigned char key)
 	else if(key == 50) // 2	close mtd & stb
 	{
 		bmtd = false;
-		if(pIStuts->MtdState[pIStuts->SensorStat])
-			tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Disable;
+		if(tmpCmd.MtdState[tmpCmd.SensorStat])
+			tmpCmd.MtdState[tmpCmd.SensorStat] = eImgAlg_Disable;
 		app_ctrl_setMtdStat(&tmpCmd);
 
 		bstb = false;
-		if(pIStuts->ImgStableStat[pIStuts->SensorStat])
-			tmpCmd.ImgStableStat[pIStuts->SensorStat] = bstb;
+		if(tmpCmd.ImgStableStat[tmpCmd.SensorStat])
+			tmpCmd.ImgStableStat[tmpCmd.SensorStat] = bstb;
 		app_ctrl_setStable(&tmpCmd);
 	}
 	else if(key == 51) // 3	mtd
 	{
 		bmtd = !bmtd;
 		if(bmtd)
-			tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Enable;
+			tmpCmd.MtdState[tmpCmd.SensorStat] = eImgAlg_Enable;
 		//else
 			//tmpCmd.MtdState[pIStuts->SensorStat] = eImgAlg_Disable;
 		app_ctrl_setMtdStat(&tmpCmd);
@@ -2410,17 +2414,17 @@ void CProcess::OnKeyDwn(unsigned char key)
 	{
 		bstb = !bstb;
 		if(bstb)
-			tmpCmd.ImgStableStat[pIStuts->SensorStat] = eImgAlg_Enable;
+			tmpCmd.ImgStableStat[tmpCmd.SensorStat] = eImgAlg_Enable;
 		app_ctrl_setStable(&tmpCmd);
 	}
 	else if(key == 53) // 5	up
 	{
-		tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x1;
+		tmpCmd.MtdSelect[tmpCmd.SensorStat] = 0x1;
 		app_ctrl_setMtdSelect(&tmpCmd);
 	}
 	else if(key == 54) // 6	down
 	{
-		tmpCmd.MtdSelect[pIStuts->SensorStat] = 0x2;
+		tmpCmd.MtdSelect[tmpCmd.SensorStat] = 0x2;
 		app_ctrl_setMtdSelect(&tmpCmd);
 	}
 	else if(key == 55) // 7
@@ -2434,7 +2438,7 @@ void CProcess::OnKeyDwn(unsigned char key)
 	}
 
 	return;
-	
+/*
 	if(key == 'a' || key == 'A')
 	{
 		tmpCmd.SensorStat = (pIStuts->SensorStat + 1)%MAX_CHAN;
@@ -2547,8 +2551,7 @@ void CProcess::OnKeyDwn(unsigned char key)
 		msgdriv_event(MSGID_EXT_INPUT_MMTSHOW, NULL);
 		OSA_printf("MSGID_EXT_INPUT_MMTSHOW\n");
 	}
-
-	
+*/	
 }
 
 

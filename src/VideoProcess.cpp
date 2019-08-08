@@ -289,9 +289,11 @@ void CVideoProcess::main_proc_func()
 			{
 				m_searchmod=0;
 			}
-
+			
 			m_iTrackStat = process_track(iTrackStat, frame_gray, frame_gray, m_rcTrack);
-		
+
+			m_renderCount = (m_renderCount+1)%256;
+			
 			putText(m_display.m_imgOsd[msgextInCtrl->SensorStat],trkINFODisplay,
 				Point( 10, 25),
 				FONT_HERSHEY_TRIPLEX,0.8,
@@ -479,7 +481,7 @@ void CVideoProcess::main_proc_func()
 				//send IPC
 				if( getSceneRectBK.width && getSceneRectBK.height && getSceneRectBK.x && getSceneRectBK.y )
 				{
-					cfg_set_trkFeedback(msgextInCtrl->SceneAvtTrkStat, tmpPoint.x, tmpPoint.y);
+					cfg_set_trkFeedback(msgextInCtrl->SceneAvtTrkStat, tmpPoint.x, tmpPoint.y,m_renderCount);
 				}	
 			}	
 		}
@@ -517,7 +519,7 @@ int CVideoProcess::MAIN_threadDestroy(void)
 }
 
 CVideoProcess::CVideoProcess()
-	:m_track(NULL),m_curChId(1),m_curSubChId(0),adaptiveThred(40)		
+	:m_track(NULL),m_curChId(1),m_curSubChId(0),adaptiveThred(40),m_renderCount(0)
 {
 	pThis = this;
 	memset(m_mtd, 0, sizeof(m_mtd));

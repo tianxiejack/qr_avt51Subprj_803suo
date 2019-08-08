@@ -315,6 +315,7 @@ public:
 public:
 	CSceneProcess m_sceneObj;
 	Rect2d getSceneRectBK;
+	unsigned char m_renderCount;
 
 };
 

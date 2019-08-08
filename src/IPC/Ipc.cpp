@@ -622,14 +622,14 @@ int cfg_set_trkSecStat(unsigned int bSecTrk)
 	return 0;
 }
 
-int cfg_set_trkFeedback(unsigned int trackstatus, float trackposx, float trackposy)
+int cfg_set_trkFeedback(unsigned int trackstatus, float trackposx, float trackposy,unsigned int count)
 {
 	static unsigned int bTrkStatPrev = 0;
 	sysConfig[CFGID_RTS_trkstat] = trackstatus;
-	//sysConfig[CFGID_RTS_trkerrx] = trackposx;
-	//sysConfig[CFGID_RTS_trkerry] = trackposy;
+
 	memcpy(&sysConfig[CFGID_RTS_trkerrx], &trackposx, 4);
 	memcpy(&sysConfig[CFGID_RTS_trkerry], &trackposy, 4);
+	memcpy(&sysConfig[CFGID_RTS_rendercount], &count, 4);
 	// report always
 	int configId = CFGID_RTS_trkstat;
 	IPCSendMsg(read_shm_single, &configId, 4);
